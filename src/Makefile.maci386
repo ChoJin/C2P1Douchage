@@ -1,0 +1,82 @@
+# Copyright (c) 2009 ChoJin/Qualifilms.
+# C2P1 Douchage Tool
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+INCLUDES := 		\
+			csv.h	\
+			ui.h	\
+
+SOURCES :=  		\
+			csv.cpp	\
+			ui.cpp	\
+			main.cpp
+
+RESULT := C2P1Douchage
+CC := g++
+STRIP := strip
+
+# Mac i386
+CPPFLAGS := -I/opt/local/include -O3 -finline-limit-1500 -Wall -arch i386 -isysroot /Developer/SDKs/MacOSX10.5.sdk `wx-config --cxxflags`
+
+# Mac
+# We don't use wx-config --libs directly because we want to link with
+# the static versions of libpng, libtiff and so on...
+# We therefore need to remove the references to -lfoobar options
+WXCONFIGLIBS := $(shell wx-config --libs)
+WXCONFIGLIBS := $(WXCONFIGLIBS:-lpng=/opt/local/lib/libpng.a)
+WXCONFIGLIBS := $(WXCONFIGLIBS:-lz=/opt/local/lib/libz.a)
+WXCONFIGLIBS := $(WXCONFIGLIBS:-ljpeg=/opt/local/lib/libjpeg.a)
+WXCONFIGLIBS := $(WXCONFIGLIBS:-ltiff=/opt/local/lib/libtiff.a)
+WXCONFIGLIBS := $(WXCONFIGLIBS:-liconv=/opt/local/lib/libiconv.a)
+LDFLAGS := -L/usr/lib -liconv -L/opt/local/lib $(WXCONFIGLIBS)
+
+OBJS := $(SOURCES:.cpp=.o)
+
+# Mac
+all: $(RESULT).app
+
+mac: $(RESULT).app
+
+$(RESULT): $(OBJS) $(INCLUDES)
+	$(CC) $(LDFLAGS) $(CPPFLAGS) -o $(RESULT) $(OBJS)
+	-$(STRIP) $(RESULT)
+
+$(RESULT).app: ../macextra/Info.plist $(RESULT) ../macextra/InfoPlist.strings 
+	-mkdir ../bin/mac/$(RESULT).app
+	-mkdir ../bin/mac/$(RESULT).app/Contents
+	-mkdir ../bin/mac/$(RESULT).app/Contents/MacOS
+	-mkdir ../bin/mac/$(RESULT).app/Contents/Resources
+	-mkdir ../bin/mac/$(RESULT).app/Contents/Resources/English.lproj
+	cp ../macextra/Info.plist ../bin/mac/$(RESULT).app/Contents/
+	cp ../macextra/InfoPlist.strings ../bin/mac/$(RESULT).app/Contents/Resources/English.lproj/
+	echo -n 'APPL????' > ../bin/mac/$(RESULT).app/Contents/PkgInfo
+	cp $(RESULT) ../bin/mac/$(RESULT).app/Contents/MacOS/$(RESULT)
+
+clean:
+	-rm -f $(OBJS) *~
+	-rm -f $(RESULT)
+
+allclean: clean
+	-rm -f $(RESULT).exe
+
+distclean: clean
+	-rm -rf ../bin/mac/$(RESULT).app
+
+alldistclean: distclean
+	-rm -f $(RESULT).exe
+	-rm -f ../bin/win/$(RESULT).exe
+
+%.o: %.cpp $(INCLUDES) 
+	$(CC) $(CPPFLAGS) -c $<

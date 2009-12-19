@@ -1,0 +1,67 @@
+C2P1DT: C2P1 Douchage Tool :)
+Copyright (c) 2009 ChoJin/Qualifilms - chojin at c2p1.fr
+
+=====================
+ License Information
+=====================
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=============
+ Description
+=============
+
+This is a program used by the C2P1 association (www.c2p1.fr) to manage
+the student presences coming to the tutoring sessions.
+
+===============
+ Installation
+===============
+
+Just use the binary ;)
+
+==========
+ Use
+==========
+
+You'll need the student info as a CSV file in DOS/WIN format
+(not MAC format insofar as it seems it's not \n line-terminated).
+
+For your information, here is the description and order of the columns,
+the ones used by this software are marked with a [*]
+- C2P1 Number [*]
+- Phone number
+- Last Name [*]
+- First Name [*]
+- "Primant" or "Doublant"
+- "adhérent" (or not...)
+- Student number, STARTING WITH "5" ! [*]
+- Date of birth, jjmmaa format
+- scolarship or not
+- email
+- price paid
+- mentoring
+- Khôlle
+- SP section
+
+==============
+ COMPILATION
+==============
+
+You'll need wxWidgets to compile it:
+- Under MS Windows it compiles under MinGW
+- Under Mac OS X, to be able to produce static binary, you'll need to
+compile wxWidgets accordingly [1]
+
+[1] http://wiki.wxwidgets.org/Distributing_WxWidgets_Applications-Distributing_WxMac_Programs#Statically_compiling
+

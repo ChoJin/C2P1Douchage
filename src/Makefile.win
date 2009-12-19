@@ -1,0 +1,63 @@
+# Copyright (c) 2009 ChoJin/Qualifilms.
+# C2P1 Douchage Tool
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+INCLUDES := 		\
+			csv.h	\
+			ui.h	\
+
+SOURCES :=  		\
+			csv.cpp	\
+			ui.cpp	\
+			main.cpp
+
+RESULT := C2P1Douchage
+CC := g++
+STRIP := strip
+
+# MinGW/MSys
+CPPFLAGS := -finput-charset=UTF-8 -O3 -finline-limit-1500 -Wall `wx-config --cxxflags`
+
+# MinGW/Msys
+LDFLAGS := `wx-config --libs`
+
+OBJS := $(SOURCES:.cpp=.o)
+
+# Win
+all: win
+
+win: $(RESULT)
+	strip $(RESULT).exe
+	cp $(RESULT).exe ../bin/win
+
+$(RESULT): $(OBJS) $(INCLUDES)
+	$(CC) $(CPPFLAGS) -o $(RESULT) $(OBJS) $(LDFLAGS)
+
+clean:
+	-rm -f $(OBJS) *~
+	-rm -f $(RESULT).exe
+
+allclean: clean
+	-rm -f $(RESULT)
+
+distclean: clean
+	-rm -f ../bin/win/$(RESULT).exe
+
+alldistclean: distclean
+	-rm -f $(RESULT)
+	-rm -rf ../bin/mac/$(RESULT).app
+
+%.o: %.cpp $(INCLUDES) 
+	$(CC) $(CPPFLAGS) -c $<
